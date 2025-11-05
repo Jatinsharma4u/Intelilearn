@@ -1,0 +1,648 @@
+/* styles/globals.css */
+@import "tailwindcss";
+
+/* ===============================
+   Root Theme Colors - Meta Blue Pro
+================================= */
+:root {
+  --color-bg: #0D0D14;                 /* Main App Background */
+  --color-card: #1B1B28;               /* Card / Panel Background */
+  --color-primary: #0082FB;            /* Primary Accent (Blue) */
+  --color-secondary: #0064E0;          /* Secondary Accent (Light Blue) */
+  --color-text: #FFFFFF;               /* Primary Text */
+  --color-text-secondary: #A0A0B8;     /* Secondary Text / Placeholder */
+  --color-success: #00FFA3;            /* Positive / Success */
+  --color-warning: #FF9F5B;            /* Warning / Spending */
+  --color-error: #FF4D6D;              /* Weak Topic High Severity */
+  --color-error-medium: #FFA45B;       /* Weak Topic Medium Severity */
+  --color-divider: #2A2A3D;            /* Borders / Dividers */
+  --color-muted: #2A2A3D;              /* Subtle Elements */
+  --color-progress-bg: #2A2A3D;        /* Progress Bars Background */
+  --color-light-bg: #F1F5F8;           /* Light mode background */
+  --color-dark-text: #1C2B33;          /* Dark text for light backgrounds */
+}
+
+/* ===============================
+   Global Body & Text with Dark Gradient
+================================= */
+body {
+  background: linear-gradient(135deg, #0A0A10 0%, #0D0D14 25%, #121220 50%, #0D0D14 75%, #0A0A10 100%);
+  background-attachment: fixed;
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  margin: 0;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Add subtle animated background particles effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(0, 130, 251, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(0, 100, 224, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(0, 255, 163, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ===============================
+   Enhanced Scrollbar Styling - Blue Theme
+================================= */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(180deg, #0A0A10 0%, #121220 100%);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-radius: 6px;
+  border: 2px solid #0A0A10;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-corner {
+  background: #0A0A10;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ===============================
+   Enhanced Cards / Panels - Blue Theme
+================================= */
+.neo-card {
+  background: linear-gradient(135deg, var(--color-card) 0%, #1E1E30 100%);
+  border-radius: 20px;
+  padding: 1.75rem;
+  border: 1px solid rgba(42, 42, 61, 0.6);
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(0, 130, 251, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.neo-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 130, 251, 0.15), transparent);
+  transition: left 0.8s ease;
+}
+
+.neo-card:hover::before {
+  left: 100%;
+}
+
+.neo-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(0, 130, 251, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-color: rgba(0, 130, 251, 0.4);
+}
+
+/* Glass Morphism - Enhanced */
+.glass-effect {
+  background: linear-gradient(135deg, rgba(27, 27, 40, 0.92) 0%, rgba(30, 30, 48, 0.95) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* ===============================
+   Enhanced Buttons - Blue Theme
+================================= */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  padding: 0.875rem 2rem;
+  border-radius: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 6px 20px rgba(0, 130, 251, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.7s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 
+    0 12px 30px rgba(0, 130, 251, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+}
+
+.btn-primary:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 
+    0 4px 15px rgba(0, 130, 251, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ===============================
+   Enhanced Input Fields
+================================= */
+.enhanced-input {
+  background: linear-gradient(135deg, #1B1B28 0%, #1E1E30 100%);
+  border: 2px solid var(--color-divider);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  color: var(--color-text);
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 
+    inset 0 2px 8px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.enhanced-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 
+    inset 0 2px 8px rgba(0, 0, 0, 0.2),
+    0 0 0 4px rgba(0, 130, 251, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #1E1E30 0%, #212135 100%);
+}
+
+.enhanced-input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.8;
+}
+
+/* ===============================
+   Enhanced Progress Bars - Blue Theme
+================================= */
+.progress-bar {
+  background: linear-gradient(135deg, var(--color-progress-bg) 0%, #232340 100%);
+  border-radius: 12px;
+  height: 12px;
+  overflow: hidden;
+  box-shadow: 
+    inset 0 2px 6px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(42, 42, 61, 0.5);
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, 
+    var(--color-primary) 0%, 
+    var(--color-secondary) 50%, 
+    var(--color-primary) 100%);
+  background-size: 200% 100%;
+  height: 100%;
+  border-radius: 12px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: progressShimmer 2s infinite linear;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(0, 130, 251, 0.4);
+}
+
+@keyframes progressShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Quiz Timer Specific */
+.quiz-timer {
+  color: var(--color-warning);
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(255, 159, 91, 0.5);
+}
+
+/* ===============================
+   Enhanced Animations
+================================= */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-12px) rotate(2deg); }
+  66% { transform: translateY(6px) rotate(-2deg); }
+}
+
+.floating { 
+  animation: float 6s ease-in-out infinite; 
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes pulseAnim {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(0, 130, 251, 0.4);
+  }
+  50% { 
+    opacity: 0.9; 
+    transform: scale(1.08);
+    box-shadow: 0 0 30px rgba(0, 130, 251, 0.6);
+  }
+}
+
+.pulse { animation: pulseAnim 3s ease-in-out infinite; }
+
+@keyframes shimmer { 
+  0% { background-position: -200% 0; } 
+  100% { background-position: 200% 0; } 
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 10px rgba(0, 130, 251, 0.4);
+  }
+  50% { 
+    box-shadow: 
+      0 0 25px rgba(0, 130, 251, 0.7), 
+      0 0 40px rgba(0, 130, 251, 0.4);
+  }
+}
+
+.glow { animation: glow 3s ease-in-out infinite; }
+
+@keyframes slideIn { 
+  from { 
+    opacity: 0; 
+    transform: translateY(40px) scale(0.95); 
+  } 
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  } 
+}
+
+.slide-in { animation: slideIn 0.7s cubic-bezier(0.4,0,0.2,1) forwards; }
+
+@keyframes fadeInUp { 
+  from { 
+    opacity:0; 
+    transform: translateY(50px) rotateX(10deg); 
+  } 
+  to { 
+    opacity:1; 
+    transform: translateY(0) rotateX(0); 
+  } 
+}
+
+.fade-in-up { animation: fadeInUp 0.9s cubic-bezier(0.4,0,0.2,1) forwards; }
+
+@keyframes flip { 
+  0% { transform: rotateY(0deg); } 
+  100% { transform: rotateY(180deg); } 
+}
+
+.rotate-y-180 { animation: flip 0.8s forwards; }
+
+@keyframes spinAnim { to { transform: rotate(360deg); } }
+.animate-spin { animation: spinAnim 1s linear infinite; }
+
+@keyframes pulseLoad { 
+  0%,100%{opacity:1;} 
+  50%{opacity:0.6;} 
+}
+
+.animate-pulse { animation: pulseLoad 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+
+/* ===============================
+   Enhanced Text & Badges - Blue Theme
+================================= */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), #00FFA3);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.badge-primary { 
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); 
+  color: white; 
+  box-shadow: 0 4px 15px rgba(0, 130, 251, 0.3);
+}
+
+.badge-success { 
+  background: linear-gradient(135deg, var(--color-success), #00cc88); 
+  color: white; 
+  box-shadow: 0 4px 15px rgba(0, 255, 163, 0.3);
+}
+
+.badge-warning { 
+  background: linear-gradient(135deg, var(--color-warning), #ff8c42); 
+  color: white; 
+  box-shadow: 0 4px 15px rgba(255, 159, 91, 0.3);
+}
+
+.badge-error { 
+  background: linear-gradient(135deg, var(--color-error), #ff3355); 
+  color: white; 
+  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+}
+
+.badge-error-medium { 
+  background: linear-gradient(135deg, var(--color-error-medium), #ff8c42); 
+  color: white; 
+  box-shadow: 0 4px 15px rgba(255, 164, 91, 0.3);
+}
+
+.badge-reward { 
+  background: linear-gradient(135deg, var(--color-success), #00cc88); 
+  color: white; 
+  box-shadow: 0 4px 15px rgba(0, 255, 163, 0.4), 0 0 20px rgba(0, 255, 163, 0.2);
+}
+
+/* Leaderboard Highlight */
+.leaderboard-highlight {
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+  color: white;
+  box-shadow: 
+    0 8px 25px rgba(0, 100, 224, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ===============================
+   Enhanced Spinner / Loader - Blue Theme
+================================= */
+.spinner {
+  border: 3px solid rgba(42, 42, 61, 0.3);
+  border-top: 3px solid var(--color-primary);
+  border-right: 3px solid var(--color-secondary);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  animation: spinAnim 1.2s linear infinite;
+  box-shadow: 0 0 20px rgba(0, 130, 251, 0.3);
+}
+
+/* ===============================
+   Enhanced Hover & Interactive Effects
+================================= */
+.hover-lift { 
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease; 
+}
+
+.hover-lift:hover { 
+  transform: translateY(-6px); 
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 130, 251, 0.2); 
+}
+
+.hover-scale { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+.hover-scale:hover { transform: scale(1.08); }
+
+.hover-glow { transition: all 0.4s ease; }
+.hover-glow:hover { 
+  box-shadow: 
+    0 0 25px rgba(0, 130, 251, 0.5), 
+    0 0 50px rgba(0, 130, 251, 0.2),
+    0 0 0 1px rgba(0, 130, 251, 0.3); 
+}
+
+.interactive { 
+  cursor: pointer; 
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+.interactive:active { 
+  transform: scale(0.92); 
+}
+
+/* ===============================
+   Weak Topic Severity Indicators
+================================= */
+.weak-topic-high {
+  background: linear-gradient(135deg, var(--color-error), #ff3355);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+  border: 1px solid rgba(255, 77, 109, 0.3);
+}
+
+.weak-topic-medium {
+  background: linear-gradient(135deg, var(--color-error-medium), #ff8c42);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 164, 91, 0.4);
+  border: 1px solid rgba(255, 164, 91, 0.3);
+}
+
+/* ===============================
+   Accessibility & Misc
+================================= */
+*:focus-visible { 
+  outline: 3px solid var(--color-primary); 
+  outline-offset: 3px; 
+  border-radius: 8px; 
+}
+
+::selection, ::-moz-selection { 
+  background: rgba(0, 130, 251, 0.4); 
+  color: white; 
+  text-shadow: none;
+}
+
+html { 
+  scroll-behavior: smooth; 
+}
+
+/* ===============================
+   Enhanced Responsive Design
+================================= */
+@media (max-width: 768px){
+  .neo-card { 
+    padding: 1.5rem; 
+    border-radius: 18px; 
+    margin: 0.5rem;
+  }
+  
+  .btn-primary { 
+    padding: 0.875rem 1.75rem; 
+    font-size: 0.9rem; 
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .progress-bar { 
+    height: 10px; 
+  }
+  
+  body::before {
+    background: 
+      radial-gradient(circle at 10% 90%, rgba(0, 130, 251, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 90% 10%, rgba(0, 100, 224, 0.06) 0%, transparent 50%);
+  }
+}
+
+/* Mobile-first responsive utilities */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+/* Responsive grid layouts */
+.responsive-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .responsive-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Safe area for mobile devices */
+.safe-area {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Better touch targets for mobile */
+.touch-target {
+  min-height: 48px;
+  min-width: 48px;
+  padding: 12px;
+}
+
+/* Smooth transitions */
+* {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Light mode support (optional) */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-bg: #F1F5F8;
+    --color-card: #FFFFFF;
+    --color-text: #1C2B33;
+    --color-text-secondary: #666666;
+    --color-divider: #E5E5E5;
+    --color-muted: #F8F9FA;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #F1F5F8 0%, #E8EFF5 50%, #F1F5F8 100%);
+  }
+}
+
+/* Loading states */
+.skeleton-loading {
+  background: linear-gradient(90deg, #1B1B28 25%, #232334 50%, #1B1B28 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 2s infinite;
+  border-radius: 12px;
+}
+
+@keyframes skeletonPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Custom scroll container */
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) var(--color-bg);
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-radius: 3px;
+}
