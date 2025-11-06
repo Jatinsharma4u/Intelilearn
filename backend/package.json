@@ -1,15 +1,24 @@
 {
-  "name": "backend",
+  "name": "eduai-backend",
   "version": "1.0.0",
-  "description": "EduAI Platform Backend",
+  "description": "EduAI Platform Backend with AI Pipeline",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "python-server": "python app.py",
+    "dev-full": "concurrently \"npm run dev\" \"npm run python-server\"",
     "test": "jest"
   },
-  "keywords": ["education", "ai", "learning", "platform"],
-  "author": "Your Name",
+  "keywords": [
+    "education",
+    "ai",
+    "learning",
+    "platform",
+    "ocr",
+    "course-generation"
+  ],
+  "author": "EduAI Team",
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
@@ -20,14 +29,18 @@
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "firebase-admin": "^13.5.0",
+    "form-data": "^4.0.4",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
     "multer": "^2.0.2",
+    "node-fetch": "^2.7.0",
     "nodemailer": "^7.0.6",
+    "python-shell": "^5.0.0",
     "socket.io": "^4.8.1",
     "tesseract.js": "^6.0.1"
   },
   "devDependencies": {
+    "concurrently": "^8.2.0",
     "jest": "^30.1.3",
     "nodemon": "^3.1.10"
   }

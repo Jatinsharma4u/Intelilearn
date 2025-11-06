@@ -11,15 +11,12 @@ import AuthGuard from "./components/auth/AuthGuard.jsx";
 import ProfileGuard from "./components/profile/ProfileGuard.jsx";
 import Home from "./pages/Home.jsx";
 import DashboardPage from "./pages/Dashboard.jsx";
-import AIPack from "./pages/AIPack.jsx";
 import Friends from "./pages/Friends.jsx";
 import Chat from "./pages/Chat.jsx";
 import Notifications from "./pages/Notifications.jsx";
 import Profile from "./pages/Profile.jsx";
 import PublicProfile from "./pages/PublicProfile.jsx";
 import Settings from "./pages/Settings.jsx";
-import WeaknessDetector from "./pages/WeaknessDetector.jsx";
-import MentorDashboard from "./pages/MentorDashboard.jsx";
 
 // Create a component to handle root path redirect
 const RootRedirect = () => {
@@ -46,16 +43,6 @@ const AppRoutes = () => {
             <AuthGuard>
               <ProfileGuard>
                 <DashboardPage />
-              </ProfileGuard>
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/ai-pack"
-          element={
-            <AuthGuard>
-              <ProfileGuard>
-                <AIPack />
               </ProfileGuard>
             </AuthGuard>
           }
@@ -120,26 +107,6 @@ const AppRoutes = () => {
             <AuthGuard>
               <ProfileGuard>
                 <Settings />
-              </ProfileGuard>
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/weakness"
-          element={
-            <AuthGuard>
-              <ProfileGuard>
-                <WeaknessDetector />
-              </ProfileGuard>
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/mentor"
-          element={
-            <AuthGuard>
-              <ProfileGuard>
-                <MentorDashboard />
               </ProfileGuard>
             </AuthGuard>
           }

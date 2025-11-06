@@ -38,14 +38,12 @@ const Sidebar = ({ isOpen, onClose, onCollapse }) => {
     },
   ];
 
+  // ✅ REMOVED: AI Pack, AI Mentor, Weakness Detector, and My Courses
   const navigationItems = [
     { path: '/dashboard', icon: Home, label: 'Dashboard', badge: null },
-    { path: '/ai-pack', icon: Upload, label: 'AI Pack', badge: 'New' },
-    { path: '/mentor', icon: GraduationCap, label: 'AI Mentor', badge: null },
-    { path: '/weakness', icon: Brain, label: 'Weakness Detector', badge: 'AI' },
     { path: '/friends', icon: Users2, label: 'Friends', badge: null },
     { path: '/chat', icon: MessageSquare, label: 'Chat', badge: null },
-    { path: '/notifications', icon: Bell, label: 'Notifications', badge: '3' },
+    { path: '/notifications', icon: Bell, label: 'Notifications', badge: profile?.notifications?.unread_count || null },
     { path: '/profile', icon: User, label: 'Profile', badge: null },
     { path: '/settings', icon: Settings, label: 'Settings', badge: null },
   ];
@@ -171,7 +169,6 @@ const Sidebar = ({ isOpen, onClose, onCollapse }) => {
                       {item.badge && (
                         <span className={`absolute -top-2 -right-2 text-[10px] px-1 rounded-full border border-[#1B1B28] ${
                           item.badge === 'New' ? 'bg-[#00FFA3] text-[#1B1B28]' : 
-                          item.badge === 'AI' ? 'bg-[#0082FB] text-white' : 
                           'bg-[#FF4D6D] text-white'
                         }`}>
                           {item.badge}
@@ -195,7 +192,6 @@ const Sidebar = ({ isOpen, onClose, onCollapse }) => {
                         {item.badge && (
                           <span className={`ml-2 text-[10px] px-1 rounded ${
                             item.badge === 'New' ? 'bg-[#00FFA3] text-[#1B1B28]' : 
-                            item.badge === 'AI' ? 'bg-[#0082FB] text-white' : 
                             'bg-[#FF4D6D] text-white'
                           }`}>
                             {item.badge}
