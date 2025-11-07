@@ -1,0 +1,23 @@
+# Core Flask backend
+flask==2.3.3
+flask-cors==4.0.0
+
+# Document & text extraction
+PyPDF2==3.0.1
+python-docx==1.1.0
+python-pptx==0.6.23
+pymupdf==1.23.8
+pillow==10.0.1
+
+# AI / NLP processing
+nltk==3.8.1
+spacy==3.7.2
+pydantic==2.8.2
+numpy==1.26.4
+scikit-learn==1.5.2   # ✅ Python 3.12 supported version
+
+# Google generative AI integration
+google-generativeai==0.3.0
+
+# Networking & API
+requests==2.31.0

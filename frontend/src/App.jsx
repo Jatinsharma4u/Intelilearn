@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext.jsx";
 import { ProfileProvider } from "./contexts/ProfileContext.jsx";
 import { ProgressProvider } from "./contexts/ProgressContext.jsx";
 import { FriendProvider } from "./contexts/FriendContext.jsx";
+import { CourseProvider } from "./contexts/CourseContext.jsx"; // NEW
 import LoginForm from "./components/auth/LoginForm.jsx";
 import RegisterForm from "./components/auth/RegisterForm.jsx";
 import ForgotPassword from "./components/auth/ForgotPassword.jsx";
@@ -17,6 +18,9 @@ import Notifications from "./pages/Notifications.jsx";
 import Profile from "./pages/Profile.jsx";
 import PublicProfile from "./pages/PublicProfile.jsx";
 import Settings from "./pages/Settings.jsx";
+import CourseDashboard from "./pages/CourseDashboard.jsx"; // NEW
+import CourseCreation from "./pages/CourseCreation.jsx"; // NEW
+import CoursePlayer from "./pages/CoursePlayer.jsx"; // NEW
 
 // Create a component to handle root path redirect
 const RootRedirect = () => {
@@ -112,6 +116,44 @@ const AppRoutes = () => {
           }
         />
 
+        {/* NEW Course Routes */}
+        <Route
+          path="/courses"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <CourseProvider>
+                  <CourseDashboard />
+                </CourseProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/courses/create"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <CourseProvider>
+                  <CourseCreation />
+                </CourseProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/courses/learn/:courseId"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <CourseProvider>
+                  <CoursePlayer />
+                </CourseProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+
         {/* Wildcard route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -124,7 +166,9 @@ const App = () => {
     <AuthProvider>
       <ProfileProvider>
         <ProgressProvider>
-          <AppRoutes />
+          <CourseProvider> {/* NEW - Wrap entire app with CourseProvider */}
+            <AppRoutes />
+          </CourseProvider>
         </ProgressProvider>
       </ProfileProvider>
     </AuthProvider>

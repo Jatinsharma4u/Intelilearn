@@ -1,4 +1,3 @@
-// src/components/layout/Sidebar.jsx
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -38,9 +37,10 @@ const Sidebar = ({ isOpen, onClose, onCollapse }) => {
     },
   ];
 
-  // ✅ REMOVED: AI Pack, AI Mentor, Weakness Detector, and My Courses
+  // ✅ ADDED: Courses to navigation
   const navigationItems = [
     { path: '/dashboard', icon: Home, label: 'Dashboard', badge: null },
+    { path: '/courses', icon: GraduationCap, label: 'Courses', badge: null }, // NEW
     { path: '/friends', icon: Users2, label: 'Friends', badge: null },
     { path: '/chat', icon: MessageSquare, label: 'Chat', badge: null },
     { path: '/notifications', icon: Bell, label: 'Notifications', badge: profile?.notifications?.unread_count || null },
@@ -148,7 +148,8 @@ const Sidebar = ({ isOpen, onClose, onCollapse }) => {
           <ul className="space-y-2 px-4">
             {navigationItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path;
+              const isActive = location.pathname === item.path || 
+                              (item.path === '/courses' && location.pathname.startsWith('/courses'));
 
               return (
                 <li key={item.path}>
