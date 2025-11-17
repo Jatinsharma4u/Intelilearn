@@ -1,9 +1,12 @@
+// src/App.jsx - UPDATED CLASSROOM ROUTES
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext.jsx";
 import { ProfileProvider } from "./contexts/ProfileContext.jsx";
 import { ProgressProvider } from "./contexts/ProgressContext.jsx";
 import { FriendProvider } from "./contexts/FriendContext.jsx";
-import { CourseProvider } from "./contexts/CourseContext.jsx"; // NEW
+import { CourseProvider } from "./contexts/CourseContext.jsx";
+import { ChatProvider } from "./contexts/ChatContext.jsx";
+import { ClassroomProvider } from "./contexts/ClassroomContext.jsx";
 import LoginForm from "./components/auth/LoginForm.jsx";
 import RegisterForm from "./components/auth/RegisterForm.jsx";
 import ForgotPassword from "./components/auth/ForgotPassword.jsx";
@@ -12,15 +15,24 @@ import AuthGuard from "./components/auth/AuthGuard.jsx";
 import ProfileGuard from "./components/profile/ProfileGuard.jsx";
 import Home from "./pages/Home.jsx";
 import DashboardPage from "./pages/Dashboard.jsx";
+import Courses from "./pages/Courses.jsx";
+import CourseDetail from "./pages/CourseDetail.jsx";
+import CoursePlayer from "./pages/CoursePlayer.jsx";
+import CreateCourse from "./pages/CreateCourse.jsx";
 import Friends from "./pages/Friends.jsx";
 import Chat from "./pages/Chat.jsx";
 import Notifications from "./pages/Notifications.jsx";
 import Profile from "./pages/Profile.jsx";
 import PublicProfile from "./pages/PublicProfile.jsx";
 import Settings from "./pages/Settings.jsx";
-import CourseDashboard from "./pages/CourseDashboard.jsx"; // NEW
-import CourseCreation from "./pages/CourseCreation.jsx"; // NEW
-import CoursePlayer from "./pages/CoursePlayer.jsx"; // NEW
+
+// Classroom Pages
+import ClassroomHome from "./pages/Classroom/ClassroomHome.jsx";
+import ClassroomDetail from "./pages/Classroom/ClassroomDetail.jsx";
+import QuizCreator from "./pages/Classroom/QuizCreator.jsx";
+import ExamPage from "./pages/Classroom/ExamPage.jsx";
+import ExamResults from "./components/classroom/ExamResults.jsx";
+import QuizAnalytics from "./components/classroom/QuizAnalytics.jsx";
 
 // Create a component to handle root path redirect
 const RootRedirect = () => {
@@ -51,6 +63,173 @@ const AppRoutes = () => {
             </AuthGuard>
           }
         />
+        
+        {/* Course Routes */}
+        <Route
+          path="/courses"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <CourseProvider>
+                  <Courses />
+                </CourseProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/courses/create"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <CourseProvider>
+                  <CreateCourse />
+                </CourseProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/courses/:courseId"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <CourseProvider>
+                  <CourseDetail />
+                </CourseProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        
+        {/* Course Learning Routes */}
+        <Route
+          path="/courses/:courseId/learn/:moduleIndex/:lessonIndex"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <CourseProvider>
+                  <CoursePlayer />
+                </CourseProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        
+        {/* Separate routes for different learning modes */}
+        <Route
+          path="/courses/:courseId/learn/:moduleIndex/:lessonIndex/quiz"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <CourseProvider>
+                  <CoursePlayer />
+                </CourseProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/courses/:courseId/learn/:moduleIndex/:lessonIndex/flashcards"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <CourseProvider>
+                  <CoursePlayer />
+                </CourseProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/courses/:courseId/learn/:moduleIndex/:lessonIndex/content"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <CourseProvider>
+                  <CoursePlayer />
+                </CourseProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+
+        {/* ========== UPDATED CLASSROOM ROUTES ========== */}
+        <Route
+          path="/classroom"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <ClassroomProvider>
+                  <ClassroomHome />
+                </ClassroomProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/classroom/:classroomId"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <ClassroomProvider>
+                  <ClassroomDetail />
+                </ClassroomProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        {/* FIXED: Match the navigation path from ClassroomDetail */}
+        <Route
+          path="/classroom/:classroomId/quiz/create"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <ClassroomProvider>
+                  <QuizCreator />
+                </ClassroomProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/exam/:quizId"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <ClassroomProvider>
+                  <ExamPage />
+                </ClassroomProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/exam/results/:sessionId"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <ClassroomProvider>
+                  <ExamResults />
+                </ClassroomProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/quiz/:quizId/analytics"
+          element={
+            <AuthGuard>
+              <ProfileGuard>
+                <ClassroomProvider>
+                  <QuizAnalytics />
+                </ClassroomProvider>
+              </ProfileGuard>
+            </AuthGuard>
+          }
+        />
+
+        {/* Other Routes */}
         <Route
           path="/friends"
           element={
@@ -68,7 +247,9 @@ const AppRoutes = () => {
           element={
             <AuthGuard>
               <ProfileGuard>
-                <Chat />
+                <ChatProvider>
+                  <Chat />
+                </ChatProvider>
               </ProfileGuard>
             </AuthGuard>
           }
@@ -116,44 +297,6 @@ const AppRoutes = () => {
           }
         />
 
-        {/* NEW Course Routes */}
-        <Route
-          path="/courses"
-          element={
-            <AuthGuard>
-              <ProfileGuard>
-                <CourseProvider>
-                  <CourseDashboard />
-                </CourseProvider>
-              </ProfileGuard>
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/courses/create"
-          element={
-            <AuthGuard>
-              <ProfileGuard>
-                <CourseProvider>
-                  <CourseCreation />
-                </CourseProvider>
-              </ProfileGuard>
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/courses/learn/:courseId"
-          element={
-            <AuthGuard>
-              <ProfileGuard>
-                <CourseProvider>
-                  <CoursePlayer />
-                </CourseProvider>
-              </ProfileGuard>
-            </AuthGuard>
-          }
-        />
-
         {/* Wildcard route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -166,9 +309,15 @@ const App = () => {
     <AuthProvider>
       <ProfileProvider>
         <ProgressProvider>
-          <CourseProvider> {/* NEW - Wrap entire app with CourseProvider */}
-            <AppRoutes />
-          </CourseProvider>
+          <FriendProvider>
+            <CourseProvider>
+              <ChatProvider>
+                <ClassroomProvider>
+                  <AppRoutes />
+                </ClassroomProvider>
+              </ChatProvider>
+            </CourseProvider>
+          </FriendProvider>
         </ProgressProvider>
       </ProfileProvider>
     </AuthProvider>

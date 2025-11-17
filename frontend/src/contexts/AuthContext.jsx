@@ -16,57 +16,104 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  /* ---------------------------------------------------
+      LISTEN TO AUTH CHANGES (Login, Logout, Refresh)
+  --------------------------------------------------- */
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // ✅ Get and store the Firebase ID token
         const token = await currentUser.getIdToken();
-        localStorage.setItem('authToken', token);
+
+        // ⭐ ALWAYS save token + uid + email
+        localStorage.setItem("authToken", token);
+        localStorage.setItem(
+          "firebaseUser",
+          JSON.stringify({
+            uid: currentUser.uid,
+            token,
+            email: currentUser.email
+          })
+        );
       } else {
-        // ✅ Remove token on logout
-        localStorage.removeItem('authToken');
+        // On logout clear storage
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("firebaseUser");
       }
-      
+
       setUser(currentUser);
       setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
 
+  /* ---------------------------------------------------
+      REGISTER
+  --------------------------------------------------- */
   const register = async (email, password) => {
     const res = await createUserWithEmailAndPassword(auth, email, password);
-    
-    // ✅ Get and store token after registration
     const token = await res.user.getIdToken();
-    localStorage.setItem('authToken', token);
-    
+
+    localStorage.setItem("authToken", token);
+    localStorage.setItem(
+      "firebaseUser",
+      JSON.stringify({
+        uid: res.user.uid,
+        token,
+        email: res.user.email
+      })
+    );
+
     await sendEmailVerification(res.user);
     return res.user;
   };
 
+  /* ---------------------------------------------------
+      LOGIN
+  --------------------------------------------------- */
   const login = async (email, password) => {
     const res = await signInWithEmailAndPassword(auth, email, password);
-    
-    // ✅ Get and store token after login
     const token = await res.user.getIdToken();
-    localStorage.setItem('authToken', token);
-    
+
+    localStorage.setItem("authToken", token);
+    localStorage.setItem(
+      "firebaseUser",
+      JSON.stringify({
+        uid: res.user.uid,
+        token,
+        email: res.user.email
+      })
+    );
+
     return res.user;
   };
 
+  /* ---------------------------------------------------
+      GOOGLE SIGN IN
+  --------------------------------------------------- */
   const googleSignIn = async () => {
     const res = await signInWithPopup(auth, googleProvider);
-    
-    // ✅ Get and store token after Google sign in
     const token = await res.user.getIdToken();
-    localStorage.setItem('authToken', token);
-    
+
+    localStorage.setItem("authToken", token);
+    localStorage.setItem(
+      "firebaseUser",
+      JSON.stringify({
+        uid: res.user.uid,
+        token,
+        email: res.user.email
+      })
+    );
+
     return res.user;
   };
 
+  /* ---------------------------------------------------
+      LOGOUT
+  --------------------------------------------------- */
   const logout = async () => {
-    // ✅ Remove token before signing out
-    localStorage.removeItem('authToken');
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("firebaseUser");
     await signOut(auth);
   };
 
@@ -77,7 +124,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// ✅ Custom hook for easy usage
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+// Custom hook
+export const useAuth = () => useContext(AuthContext);

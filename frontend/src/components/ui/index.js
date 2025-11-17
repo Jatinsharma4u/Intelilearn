@@ -1,14 +1,22 @@
-// components/ui/index.js
-export * from './Tabs';
-export * from './Card';
-export { default as Progress } from './Progress';
-export { default as Badge } from './Badge';
+// Export all UI components from one file
 export { default as Avatar } from './Avatar';
+export { default as Badge } from './Badge';
 export { default as Button } from './Button';
-export { default as Input } from './Input';
+export { default as Card } from './Card';
 export { default as Dropdown } from './Dropdown';
 export { default as EmojiPicker } from './EmojiPicker';
+export { default as Grid } from './Grid';
+export { default as Input } from './Input';
 export { default as Loader } from './Loader';
 export { default as Modal } from './Modal';
+export { default as Progress } from './Progress';
+export { default as Select } from './Select';
+export { default as Switch } from './Switch';
+export { default as Tabs } from './Tabs';
 export { default as Toast } from './Toast';
 export { default as Tooltip } from './Tooltip';
+export { default as TextArea } from './TextArea';
+export { default as Stepper } from './Stepper';
+export {default as EmptyState} from './EmptyState';
+export {default as FileUploadZone} from './FileUploadZone';
+export {default as Radio} from './Radio'; 

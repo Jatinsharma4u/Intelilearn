@@ -1,304 +1,451 @@
+// models/Course.js - UPDATED WITH TOPIC TAGGING FOR QUIZZES
 const mongoose = require('mongoose');
-
-const lessonSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  duration: { type: Number, default: 10 }, // in minutes
-  order: { type: Number, required: true },
-  keywords: [String],
-  examples: [{
-    title: String,
-    description: String,
-    code: String
-  }],
-  summary: String,
-  completed: { type: Boolean, default: false },
-  completedAt: Date,
-  timeSpent: { type: Number, default: 0 },
-  created_at: { type: Date, default: Date.now }
-});
 
 const quizQuestionSchema = new mongoose.Schema({
   question: { type: String, required: true },
   options: [{ type: String, required: true }],
-  correct_answer: { type: String, required: true },
+  correctAnswer: { type: String, required: true },
   explanation: String,
   difficulty: { type: String, enum: ['easy', 'medium', 'hard'], default: 'medium' },
-  points: { type: Number, default: 5 }
+  // ✅ NEW: Topic/Concept tagging for quizzes
+  topic: { type: String, default: '' },
+  conceptTags: [{ type: String }]
 });
 
 const flashcardSchema = new mongoose.Schema({
-  front: { type: String, required: true },
-  back: { type: String, required: true },
-  difficulty: { type: String, enum: ['easy', 'medium', 'hard'], default: 'medium' },
+  term: { type: String, required: true },
+  definition: { type: String, required: true },
   mastered: { type: Boolean, default: false }
+});
+
+// Structured Content Schema
+const structuredContentSchema = new mongoose.Schema({
+  // Main content sections
+  introduction: { 
+    type: String, 
+    required: true,
+    default: "This lesson covers essential concepts and practical applications."
+  },
+  keyConcepts: [{ 
+    type: String 
+  }],
+  detailedExplanation: { 
+    type: String, 
+    required: true 
+  },
+  practicalExamples: [{ 
+    type: String 
+  }],
+  importantPoints: [{ 
+    type: String 
+  }],
+  applications: { 
+    type: String 
+  },
+  
+  // Additional learning elements
+  learningObjectives: [{ 
+    type: String 
+  }],
+  prerequisites: [{ 
+    type: String 
+  }],
+  summary: { 
+    type: String 
+  },
+  
+  // Metadata
+  estimatedReadingTime: { 
+    type: Number, 
+    default: 5 
+  },
+  difficulty: { 
+    type: String, 
+    enum: ['easy', 'medium', 'hard'], 
+    default: 'medium' 
+  }
+});
+
+const lessonSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  
+  // Content with structured format
+  content: { 
+    type: structuredContentSchema, 
+    required: true 
+  },
+  
+  duration: { type: Number, default: 10 }, // minutes
+  order: { type: Number, required: true },
+  quiz: [quizQuestionSchema],
+  flashcards: [flashcardSchema],
+  
+  // Progressive completion tracking
+  locked: { type: Boolean, default: true },
+  contentCompleted: { type: Boolean, default: false },
+  quizCompleted: { type: Boolean, default: false },
+  flashcardsCompleted: { type: Boolean, default: false },
+  completed: { type: Boolean, default: false },
+  completedAt: { type: Date },
+  quizScore: { type: Number, default: 0 },
+  timeSpent: { type: Number, default: 0 }, // in seconds
+  
+  // Individual completion timestamps
+  contentCompletedAt: { type: Date },
+  quizCompletedAt: { type: Date },
+  flashcardsCompletedAt: { type: Date }
 });
 
 const moduleSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: String,
   order: { type: Number, required: true },
-  batch: { type: Number, default: 1 }, // ✅ NEW: Batch number for processing
   lessons: [lessonSchema],
-  quiz: [quizQuestionSchema],
-  flashcards: [flashcardSchema],
-  duration: { type: Number, default: 0 }, // Total minutes
-  learning_objectives: [String], // ✅ NEW: Learning objectives for module
-  topics: [String], // ✅ NEW: Specific topics covered in this module
+  
+  // Module level completion tracking
   completed: { type: Boolean, default: false },
-  completedAt: Date,
-  timeSpent: { type: Number, default: 0 },
-  quizResult: { // ✅ NEW: Store quiz results
-    score: Number,
-    correctAnswers: Number,
-    totalQuestions: Number,
-    timeTaken: Number,
-    attemptedAt: Date
-  }
+  completedAt: { type: Date }
 });
 
 const courseSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: String,
-  creator: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true 
-  },
-  original_files: [{
+  originalFile: {
     filename: String,
-    original_name: String,
-    file_type: String,
-    file_size: Number,
-    upload_date: { type: Date, default: Date.now }
-  }],
+    originalName: String,
+    size: Number,
+    uploadedAt: { type: Date, default: Date.now }
+  },
+  createdBy: { type: String, required: true }, // Firebase UID
   settings: {
-    modules_count: { type: Number, default: 5 },
-    flashcards_count: { type: Number, default: 20 },
-    difficulty: { type: String, enum: ['beginner', 'intermediate', 'advanced'], default: 'beginner' },
-    learning_pace: { type: String, enum: ['slow', 'medium', 'fast'], default: 'medium' },
-    questions_per_module: { type: Number, default: 10 },
-    exam_type: { type: String, enum: ['academic', 'practical', 'conceptual'], default: 'academic' },
-    depth_level: { type: String, enum: ['basic', 'comprehensive', 'in-depth'], default: 'comprehensive' }
+    contentType: { 
+      type: String, 
+      enum: ['conceptual', 'practical', 'exam-oriented', 'comprehensive'], 
+      default: 'comprehensive' 
+    },
+    difficulty: { 
+      type: String, 
+      enum: ['beginner', 'intermediate', 'advanced', 'mixed'], 
+      default: 'beginner' 
+    },
+    learningPace: { 
+      type: String, 
+      enum: ['slow', 'moderate', 'fast', 'crash'], 
+      default: 'moderate' 
+    },
+    questionsPerTopic: { type: Number, default: 5 },
+    flashcardsPerModule: { type: Number, default: 3 },
+    quizDifficulty: { 
+      type: String, 
+      enum: ['easy', 'medium', 'hard'], 
+      default: 'medium' 
+    },
+    includeExercises: { type: Boolean, default: true },
+    contentStyle: { 
+      type: String, 
+      enum: ['visual', 'textual', 'interactive', 'story-based'], 
+      default: 'interactive' 
+    },
+    totalModules: { type: Number, default: 5 },
+    lessonsPerModule: { type: Number, default: 4 }
   },
   modules: [moduleSchema],
-  status: {
-    type: String,
-    enum: ['processing', 'ready', 'failed'],
-    default: 'processing'
+  isPublic: { type: Boolean, default: false },
+  
+  // Course generation status
+  generationStatus: { 
+    type: String, 
+    enum: ['processing', 'completed', 'failed'], 
+    default: 'processing' 
   },
-  processing_log: [{
-    step: String,
-    status: String,
-    message: String,
-    timestamp: { type: Date, default: Date.now }
-  }],
-  
-  // ✅ ENHANCED: Total calculations
-  total_duration: { type: Number, default: 0 },
-  total_lessons: { type: Number, default: 0 },
-  total_quizzes: { type: Number, default: 0 },
-  total_flashcards: { type: Number, default: 0 },
-  total_questions: { type: Number, default: 0 }, // ✅ NEW: Total quiz questions
-  
-  tags: [String],
-  category: String,
-  is_public: { type: Boolean, default: false },
-  thumbnail: String,
-  
-  // ✅ ENHANCED: Content analysis for better tracking
-  content_analysis: {
-    source_topics: [String],
-    source_keywords: [String],
-    total_source_files: Number,
-    extraction_quality: String,
-    content_richness: { type: String, enum: ['low', 'medium', 'high'], default: 'medium' },
-    key_concepts: [String],
-    estimated_study_hours: Number
-  },
-  
-  // ✅ NEW: Generation metadata for batching system
-  generation_metadata: {
-    batch_system_used: { type: Boolean, default: false },
-    total_batches: { type: Number, default: 1 },
-    enhanced_content: { type: Boolean, default: true },
-    fallback_used: { type: Boolean, default: false },
-    generation_timestamp: Date
-  },
-  
-  // ✅ NEW: Performance metrics
-  performance_metrics: {
-    avg_lesson_duration: Number,
-    avg_quiz_score: Number,
-    completion_rate: Number,
-    popular_modules: [String],
-    difficult_topics: [String]
-  },
-  
-  created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now }
+  isGenerating: { type: Boolean, default: true },
+  error: String,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-// Update timestamp before save
-courseSchema.pre('save', function(next) {
-  this.updated_at = Date.now();
-  
-  // Calculate enhanced totals before save
-  if (this.modules) {
-    this.total_duration = this.modules.reduce((sum, module) => sum + (module.duration || 0), 0);
-    this.total_lessons = this.modules.reduce((sum, module) => sum + (module.lessons?.length || 0), 0);
-    this.total_quizzes = this.modules.reduce((sum, module) => sum + (module.quiz?.length > 0 ? 1 : 0), 0);
-    this.total_flashcards = this.modules.reduce((sum, module) => sum + (module.flashcards?.length || 0), 0);
-    this.total_questions = this.modules.reduce((sum, module) => sum + (module.quiz?.length || 0), 0);
-    
-    // Calculate performance metrics
-    const totalModules = this.modules.length;
-    const completedModules = this.modules.filter(module => module.completed).length;
-    this.performance_metrics = this.performance_metrics || {};
-    this.performance_metrics.completion_rate = totalModules > 0 ? (completedModules / totalModules) * 100 : 0;
-    
-    // Calculate average lesson duration
-    const totalLessons = this.modules.reduce((sum, module) => sum + (module.lessons?.length || 0), 0);
-    const totalLessonDuration = this.modules.reduce((sum, module) => {
-      return sum + (module.lessons?.reduce((lessonSum, lesson) => lessonSum + (lesson.duration || 0), 0) || 0);
-    }, 0);
-    this.performance_metrics.avg_lesson_duration = totalLessons > 0 ? totalLessonDuration / totalLessons : 0;
-    
-    // Calculate average quiz score
-    const modulesWithQuizResults = this.modules.filter(module => module.quizResult?.score);
-    const totalQuizScore = modulesWithQuizResults.reduce((sum, module) => sum + (module.quizResult.score || 0), 0);
-    this.performance_metrics.avg_quiz_score = modulesWithQuizResults.length > 0 ? totalQuizScore / modulesWithQuizResults.length : 0;
-    
-    // Find popular modules (most time spent)
-    this.performance_metrics.popular_modules = this.modules
-      .filter(module => module.timeSpent > 0)
-      .sort((a, b) => b.timeSpent - a.timeSpent)
-      .slice(0, 3)
-      .map(module => module.title);
-  }
-  
-  next();
-});
-
-// Enhanced progress tracking virtual with batching support
-courseSchema.virtual('progress').get(function() {
-  if (!this.modules || this.modules.length === 0) return 0;
-  
-  let totalLessons = 0;
-  let completedLessons = 0;
-  let totalQuizzes = 0;
-  let completedQuizzes = 0;
-  let totalFlashcards = 0;
-  let masteredFlashcards = 0;
-
-  this.modules.forEach(module => {
-    totalLessons += module.lessons?.length || 0;
-    totalQuizzes += module.quiz?.length > 0 ? 1 : 0;
-    totalFlashcards += module.flashcards?.length || 0;
-
-    // Count completed lessons
-    if (module.lessons) {
-      completedLessons += module.lessons.filter(lesson => lesson.completed).length;
-    }
-
-    // Count completed quizzes
-    if (module.quiz?.length > 0 && module.completed) {
-      completedQuizzes++;
-    }
-
-    // Count mastered flashcards
-    if (module.flashcards) {
-      masteredFlashcards += module.flashcards.filter(card => card.mastered).length;
-    }
-  });
-
-  // Enhanced weighted progress: 
-  // 50% lessons + 30% quizzes + 20% flashcards
-  const lessonProgress = totalLessons > 0 ? (completedLessons / totalLessons) * 50 : 0;
-  const quizProgress = totalQuizzes > 0 ? (completedQuizzes / totalQuizzes) * 30 : 0;
-  const flashcardProgress = totalFlashcards > 0 ? (masteredFlashcards / totalFlashcards) * 20 : 0;
-
-  return Math.min(lessonProgress + quizProgress + flashcardProgress, 100);
-});
-
-// ✅ NEW: Virtual for batch progress tracking
-courseSchema.virtual('batch_progress').get(function() {
-  if (!this.modules || this.modules.length === 0) return {};
-  
-  const batchProgress = {};
-  const batches = [...new Set(this.modules.map(module => module.batch || 1))];
-  
-  batches.forEach(batch => {
-    const batchModules = this.modules.filter(module => (module.batch || 1) === batch);
-    const totalBatchModules = batchModules.length;
-    const completedBatchModules = batchModules.filter(module => module.completed).length;
-    
-    batchProgress[`batch_${batch}`] = {
-      total_modules: totalBatchModules,
-      completed_modules: completedBatchModules,
-      progress_percentage: totalBatchModules > 0 ? (completedBatchModules / totalBatchModules) * 100 : 0,
-      batch_duration: batchModules.reduce((sum, module) => sum + (module.duration || 0), 0)
-    };
-  });
-  
-  return batchProgress;
-});
-
-// ✅ NEW: Method to get module statistics
-courseSchema.methods.getModuleStats = function() {
-  if (!this.modules || this.modules.length === 0) return null;
-  
-  return {
-    total_modules: this.modules.length,
-    completed_modules: this.modules.filter(module => module.completed).length,
-    total_lessons: this.total_lessons,
-    total_questions: this.total_questions,
-    total_flashcards: this.total_flashcards,
-    total_duration: this.total_duration,
-    estimated_completion_time: Math.ceil(this.total_duration / 60), // in hours
-    batches_used: [...new Set(this.modules.map(module => module.batch || 1))].length
-  };
+// Auto-unlock next lesson when current lesson completes
+lessonSchema.methods.completeLesson = function() {
+  this.completed = true;
+  this.completedAt = new Date();
+  return this;
 };
 
-// ✅ NEW: Method to find difficult topics based on quiz performance
-courseSchema.methods.getDifficultTopics = function() {
-  if (!this.modules || this.modules.length === 0) return [];
+// Check if lesson can be unlocked
+lessonSchema.methods.canUnlock = function(previousLesson) {
+  return previousLesson && previousLesson.completed;
+};
+
+// Method to mark content as completed
+lessonSchema.methods.markContentCompleted = function() {
+  this.contentCompleted = true;
+  this.contentCompletedAt = new Date();
   
-  const difficultTopics = [];
+  // Check if all components are completed
+  if (this.quizCompleted && this.flashcardsCompleted) {
+    this.completeLesson();
+  }
+  return this;
+};
+
+// Method to mark quiz as completed
+lessonSchema.methods.markQuizCompleted = function(score) {
+  this.quizCompleted = true;
+  this.quizCompletedAt = new Date();
+  this.quizScore = score;
   
-  this.modules.forEach(module => {
-    if (module.quizResult && module.quizResult.score < 70) {
-      // Module with low quiz score, consider its topics difficult
-      if (module.topics && module.topics.length > 0) {
-        difficultTopics.push(...module.topics);
-      } else if (module.title) {
-        // Extract topic from module title as fallback
-        const topic = module.title.replace(/Module \d+:\s*/i, '').trim();
-        if (topic) difficultTopics.push(topic);
+  // Check if all components are completed
+  if (this.contentCompleted && this.flashcardsCompleted) {
+    this.completeLesson();
+  }
+  return this;
+};
+
+// Method to mark flashcards as completed
+lessonSchema.methods.markFlashcardsCompleted = function() {
+  this.flashcardsCompleted = true;
+  this.flashcardsCompletedAt = new Date();
+  
+  // Check if all components are completed
+  if (this.contentCompleted && this.quizCompleted) {
+    this.completeLesson();
+  }
+  return this;
+};
+
+courseSchema.pre('save', function(next) {
+  this.updatedAt = Date.now();
+  
+  // Auto-unlock first lesson of first module for new courses
+  if (this.isNew && this.modules.length > 0 && this.modules[0].lessons.length > 0) {
+    this.modules[0].lessons[0].locked = false;
+  }
+  
+  // Auto-unlock next lessons and modules based on completion
+  this.modules.forEach((module, moduleIndex) => {
+    let allLessonsCompleted = true;
+    
+    module.lessons.forEach((lesson, lessonIndex) => {
+      // Check if all components are completed for overall completion
+      if (lesson.contentCompleted && lesson.quizCompleted && lesson.flashcardsCompleted) {
+        lesson.completed = true;
+        if (!lesson.completedAt) {
+          lesson.completedAt = new Date();
+        }
+        
+        // Auto-unlock next lesson
+        if (lessonIndex < module.lessons.length - 1) {
+          module.lessons[lessonIndex + 1].locked = false;
+        }
+      }
+      
+      if (!lesson.completed) {
+        allLessonsCompleted = false;
+      }
+    });
+    
+    // Mark module as completed if all lessons are completed
+    if (allLessonsCompleted) {
+      module.completed = true;
+      if (!module.completedAt) {
+        module.completedAt = new Date();
+      }
+      
+      // Auto-unlock next module
+      if (moduleIndex < this.modules.length - 1 && this.modules[moduleIndex + 1].lessons.length > 0) {
+        this.modules[moduleIndex + 1].lessons[0].locked = false;
       }
     }
   });
   
-  // Remove duplicates and return
-  return [...new Set(difficultTopics)].slice(0, 5);
+  next();
+});
+
+// Virtual for overall progress (updated)
+courseSchema.virtual('progress').get(function() {
+  if (!this.modules || this.modules.length === 0) return 0;
+  
+  const totalLessons = this.modules.reduce((acc, module) => 
+    acc + module.lessons.length, 0
+  );
+  
+  if (totalLessons === 0) return 0;
+  
+  const completedLessons = this.modules.reduce((acc, module) => 
+    acc + module.lessons.filter(lesson => lesson.completed).length, 0
+  );
+  
+  return Math.round((completedLessons / totalLessons) * 100);
+});
+
+// Method to reset a lesson
+courseSchema.methods.resetLesson = function(moduleIndex, lessonIndex) {
+  if (!this.modules[moduleIndex] || !this.modules[moduleIndex].lessons[lessonIndex]) {
+    return this;
+  }
+  
+  const lesson = this.modules[moduleIndex].lessons[lessonIndex];
+  
+  lesson.contentCompleted = false;
+  lesson.quizCompleted = false;
+  lesson.flashcardsCompleted = false;
+  lesson.completed = false;
+  lesson.quizScore = 0;
+  lesson.completedAt = null;
+  lesson.contentCompletedAt = null;
+  lesson.quizCompletedAt = null;
+  lesson.flashcardsCompletedAt = null;
+  
+  // Re-lock subsequent lessons in the same module
+  for (let i = lessonIndex + 1; i < this.modules[moduleIndex].lessons.length; i++) {
+    this.modules[moduleIndex].lessons[i].locked = true;
+    this.resetLesson(moduleIndex, i); // Also reset the subsequent lessons
+  }
+  
+  return this;
 };
 
-// ✅ NEW: Static method to get course analytics
-courseSchema.statics.getCourseAnalytics = async function(courseId) {
-  const course = await this.findById(courseId);
-  if (!course) return null;
+// Method to get structured content for a lesson
+courseSchema.methods.getLessonContent = function(moduleIndex, lessonIndex) {
+  if (!this.modules[moduleIndex] || !this.modules[moduleIndex].lessons[lessonIndex]) {
+    return null;
+  }
   
-  return {
-    course_id: course._id,
-    title: course.title,
-    progress: course.progress,
-    stats: course.getModuleStats(),
-    batch_progress: course.batch_progress,
-    difficult_topics: course.getDifficultTopics(),
-    performance: course.performance_metrics,
-    generation_info: course.generation_metadata,
-    content_quality: course.content_analysis?.content_richness || 'medium'
+  const lesson = this.modules[moduleIndex].lessons[lessonIndex];
+  return lesson.content;
+};
+
+// Method to update lesson content
+courseSchema.methods.updateLessonContent = function(moduleIndex, lessonIndex, newContent) {
+  if (!this.modules[moduleIndex] || !this.modules[moduleIndex].lessons[lessonIndex]) {
+    return false;
+  }
+  
+  this.modules[moduleIndex].lessons[lessonIndex].content = {
+    ...this.modules[moduleIndex].lessons[lessonIndex].content,
+    ...newContent
   };
+  
+  return true;
+};
+
+// ✅ NEW: Method to get quizzes by topic
+courseSchema.methods.getQuizzesByTopic = function(topic) {
+  const quizzesByTopic = [];
+  
+  this.modules.forEach(module => {
+    module.lessons.forEach(lesson => {
+      lesson.quiz.forEach(question => {
+        if (question.topic === topic || 
+            (question.conceptTags && question.conceptTags.includes(topic))) {
+          quizzesByTopic.push({
+            module: module.title,
+            lesson: lesson.title,
+            question: question
+          });
+        }
+      });
+    });
+  });
+  
+  return quizzesByTopic;
+};
+
+// ✅ NEW: Method to get all unique topics from quizzes
+courseSchema.methods.getAllQuizTopics = function() {
+  const topics = new Set();
+  
+  this.modules.forEach(module => {
+    module.lessons.forEach(lesson => {
+      lesson.quiz.forEach(question => {
+        if (question.topic) {
+          topics.add(question.topic);
+        }
+        if (question.conceptTags) {
+          question.conceptTags.forEach(tag => topics.add(tag));
+        }
+      });
+    });
+  });
+  
+  return Array.from(topics);
+};
+
+// Static method to find courses by user
+courseSchema.statics.findByUser = function(userId) {
+  return this.find({ createdBy: userId }).sort({ createdAt: -1 });
+};
+
+// Static method to find public courses
+courseSchema.statics.findPublic = function() {
+  return this.find({ isPublic: true }).sort({ createdAt: -1 });
+};
+
+// Static method to find course by ID with populated data
+courseSchema.statics.findByIdWithDetails = function(courseId) {
+  return this.findById(courseId);
+};
+
+// Method to calculate total course duration
+courseSchema.virtual('totalDuration').get(function() {
+  if (!this.modules || this.modules.length === 0) return 0;
+  
+  return this.modules.reduce((total, module) => {
+    const moduleDuration = module.lessons.reduce((moduleTotal, lesson) => {
+      return moduleTotal + (lesson.duration || 0);
+    }, 0);
+    return total + moduleDuration;
+  }, 0);
+});
+
+// Method to get course statistics
+courseSchema.methods.getCourseStats = function() {
+  const stats = {
+    totalModules: this.modules.length,
+    totalLessons: 0,
+    completedLessons: 0,
+    totalQuizzes: 0,
+    totalFlashcards: 0,
+    totalDuration: this.totalDuration,
+    // ✅ NEW: Quiz topic statistics
+    totalTopics: 0,
+    topics: []
+  };
+  
+  const topicMap = new Map();
+  
+  this.modules.forEach(module => {
+    stats.totalLessons += module.lessons.length;
+    stats.completedLessons += module.lessons.filter(lesson => lesson.completed).length;
+    
+    module.lessons.forEach(lesson => {
+      stats.totalQuizzes += lesson.quiz.length;
+      stats.totalFlashcards += lesson.flashcards.length;
+      
+      // Count questions by topic
+      lesson.quiz.forEach(question => {
+        if (question.topic) {
+          const count = topicMap.get(question.topic) || 0;
+          topicMap.set(question.topic, count + 1);
+        }
+        
+        if (question.conceptTags) {
+          question.conceptTags.forEach(tag => {
+            const count = topicMap.get(tag) || 0;
+            topicMap.set(tag, count + 1);
+          });
+        }
+      });
+    });
+  });
+  
+  stats.totalTopics = topicMap.size;
+  stats.topics = Array.from(topicMap.entries()).map(([topic, count]) => ({
+    topic,
+    questionCount: count
+  }));
+  
+  return stats;
 };
 
 module.exports = mongoose.model('Course', courseSchema);

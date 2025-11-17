@@ -4,7 +4,8 @@ import {
   Home, Upload, GraduationCap, Brain, Users, 
   MessageCircle, Bell, User, Settings, ChevronLeft, 
   ChevronRight, BookOpen, TrendingUp, Award, Sparkles,
-  Zap, Target, Users2, MessageSquare
+  Zap, Target, Users2, MessageSquare,
+  School // ADDED: School icon for Classroom
 } from 'lucide-react';
 import { useProfile } from '../../contexts/ProfileContext';
 
@@ -37,10 +38,11 @@ const Sidebar = ({ isOpen, onClose, onCollapse }) => {
     },
   ];
 
-  // ✅ ADDED: Courses to navigation
+  // ✅ UPDATED: Added Classroom to navigation
   const navigationItems = [
     { path: '/dashboard', icon: Home, label: 'Dashboard', badge: null },
-    { path: '/courses', icon: GraduationCap, label: 'Courses', badge: null }, // NEW
+    { path: '/courses', icon: GraduationCap, label: 'Courses', badge: null },
+    { path: '/classroom', icon: School, label: 'Classroom', badge: null }, // NEW: Classroom navigation
     { path: '/friends', icon: Users2, label: 'Friends', badge: null },
     { path: '/chat', icon: MessageSquare, label: 'Chat', badge: null },
     { path: '/notifications', icon: Bell, label: 'Notifications', badge: profile?.notifications?.unread_count || null },
@@ -66,6 +68,35 @@ const Sidebar = ({ isOpen, onClose, onCollapse }) => {
 
   const getUserLevel = () => {
     return profile?.progress?.level ?? 1;
+  };
+
+  // Helper function to check if a path is active
+  const isActivePath = (path) => {
+    if (path === '/dashboard') {
+      return location.pathname === '/dashboard';
+    }
+    if (path === '/courses') {
+      return location.pathname.startsWith('/courses');
+    }
+    if (path === '/classroom') {
+      return location.pathname.startsWith('/classroom');
+    }
+    if (path === '/friends') {
+      return location.pathname.startsWith('/friends');
+    }
+    if (path === '/chat') {
+      return location.pathname.startsWith('/chat');
+    }
+    if (path === '/notifications') {
+      return location.pathname.startsWith('/notifications');
+    }
+    if (path === '/profile') {
+      return location.pathname === '/profile' || location.pathname.startsWith('/profile/');
+    }
+    if (path === '/settings') {
+      return location.pathname.startsWith('/settings');
+    }
+    return location.pathname === path;
   };
 
   return (
@@ -148,8 +179,7 @@ const Sidebar = ({ isOpen, onClose, onCollapse }) => {
           <ul className="space-y-2 px-4">
             {navigationItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path || 
-                              (item.path === '/courses' && location.pathname.startsWith('/courses'));
+              const isActive = isActivePath(item.path);
 
               return (
                 <li key={item.path}>
